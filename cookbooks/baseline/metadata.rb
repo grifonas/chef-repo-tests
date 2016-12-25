@@ -1,0 +1,8 @@
+name 'baseline'
+maintainer 'The Authors'
+maintainer_email 'you@example.com'
+license 'all_rights'
+description 'Installs/Configures baseline'
+long_description 'Installs/Configures baseline'
+version '0.1.4'
+depends 'chef-client'

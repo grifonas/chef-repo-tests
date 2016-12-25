@@ -1,0 +1,14 @@
+{
+    "bootstrap": true,
+    "server": true,
+    "log_level": "DEBUG",
+    "enable_syslog": true,
+    "datacenter": "dc1",
+    "addresses" : {
+      "http": "0.0.0.0"
+    },
+    "bind_addr": "<%= node['ipaddress']%>",
+    "node_name": "consul.infra",
+    "data_dir": "/var/lib/consul/data",
+    "ui_dir": "/var/lib/consul/web-ui"
+}

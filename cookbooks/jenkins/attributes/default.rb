@@ -1,0 +1,1 @@
+default['nodejs']['consul-server'] = 'consul.infra'
