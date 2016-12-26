@@ -4,7 +4,7 @@ maintainer_email 'you@example.com'
 license 'all_rights'
 description 'Installs/Configures nodejs'
 long_description 'Installs/Configures nodejs'
-version '0.1.15'
+version '0.1.18'
 
 # If you upload to Supermarket you should set this so your cookbook
 # gets a `View Issues` link
