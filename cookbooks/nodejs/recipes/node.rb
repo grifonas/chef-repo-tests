@@ -87,7 +87,7 @@ bash 'get_latest_artefact' do
   user 'root'
   cwd '/opt/nodeapp'
   code <<-EOH
-    wget http://artifactory.infra:8081/artifactory/TEST-QA/main.js -O main.js-new
+    wget http://artifactory.infra:8081/artifactory/#{node['nodejs']['RepoName']}/main.js -O main.js-new
     md5sum main.js-new | awk '{print $1}' > md5_new.txt
   EOH
 end

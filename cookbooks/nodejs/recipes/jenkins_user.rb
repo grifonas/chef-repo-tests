@@ -9,39 +9,33 @@ group 'jenkins' do
   action :create  
 end
 
-
-
 user "Jenkins Release User" do
-  username myUser['name']    
-  gid myUser['name']
-  password myUser['passHash']
+  username 'jenkins'    
+  gid 'jenkins'
+  password node['nodejs']['jenkinsPassHash']
   shell '/bin/bash'   
-  home "/home/#{myUser['name']}"
+  home "/home/jenkins"
   manage_home true
 end
 
-node["baseline"]["users"].each do |myUser|  
-  user "#{myUser['fullName']}" do
-    username myUser['name']    
-    gid myUser['name']
-  	password myUser['passHash']
-  	shell '/bin/bash'  	
-  	home "/home/#{myUser['name']}"
-  	manage_home true
-  end
+
+directory "/home/jenkins/.ssh" do
+	recursive true
+  action :create
 end
 
 
-node["baseline"]["users"].each do |myUser|
-  directory "/home/#{myUser['name']}/.ssh/" do
-  	action :create
-  end
+file "/home/jenkins/.ssh/authorized_keys" do
+  mode '600'
+  owner 'jenkins'
+  content node['nodejs']['sshPubKey']
 end
 
-node["baseline"]["users"].each do |myUser|
-  file "/home/#{myUser['name']}/.ssh/authorized_keys" do
-    mode '600'
-    owner myUser['name']
-    content myUser['sshPubKey']
-  end
+bash 'jenkins-chef-client_sudo' do
+  user 'root'
+  not_if 'grep jenkins /etc/sudoers'
+  code <<-EOH
+    echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/chef-client" >> /etc/sudoers    
+  EOH
 end
+

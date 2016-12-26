@@ -31,5 +31,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[nodejs]
+      - recipe[nodejs::jenkins_user]
     attributes:
