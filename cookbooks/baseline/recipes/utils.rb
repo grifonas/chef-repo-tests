@@ -4,6 +4,13 @@
 #
 # Greg konradt. Dec. 2016
 
-package ['iotop', 'htop', 'iftop', 'traceroute']  do
+package ['vim', 'iotop', 'htop', 'iftop', 'traceroute']  do
   action :install
+end
+
+bash 'set_default_editor' do
+  user 'root'  
+  code <<-EOH
+  	export EDITOR=vim
+  EOH
 end

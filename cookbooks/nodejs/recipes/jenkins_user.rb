@@ -35,7 +35,9 @@ bash 'jenkins-chef-client_sudo' do
   user 'root'
   not_if 'grep jenkins /etc/sudoers'
   code <<-EOH
-    echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/chef-client" >> /etc/sudoers    
+    echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/chef-client" >> /etc/sudoers
+    touch /opt/nodeapp/Build.info
+    chown jenkins. /opt/nodeapp/Build.info
   EOH
 end
 
