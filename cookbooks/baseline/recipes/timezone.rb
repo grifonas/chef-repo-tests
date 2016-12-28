@@ -1,4 +1,4 @@
-case node.platform_family 
+case node['platform_family']
 when 'debian'
   package 'tzdata' do
     action :upgrade

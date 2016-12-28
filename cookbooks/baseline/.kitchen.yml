@@ -15,6 +15,7 @@ driver:
 transport:
   ssh_key: /Users/grifonas/keys/AWS-Default.pem
   username: ubuntu
+  #username: centos
 
 provisioner:
   name: chef_solo
@@ -22,7 +23,10 @@ provisioner:
 platforms:
   - name: amazon
     driver:
+      #Ubuntu:
       image_id: ami-6f587e1c
+      # Centos:
+      #image_id: ami-7abd0209
       tags:
         Name: Baseline-ChefKitchen-Tests
         CycleStatus: Tests
@@ -31,5 +35,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[baseline::default]
+      - recipe[baseline::users]
     attributes:

@@ -23,7 +23,7 @@ template "/etc/ntp.conf" do
 end
 
 
-case node.platform_family 
+case node['platform_family']
 when 'debian'
   service 'ntp' do
     supports :status => true, :restart => true
