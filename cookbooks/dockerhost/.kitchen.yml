@@ -14,8 +14,8 @@ driver:
 
 transport:
   ssh_key: /Users/grifonas/keys/AWS-Default.pem
-  #username: ubuntu
-  username: centos
+  username: ubuntu
+  #username: centos
 
 provisioner:
   name: chef_solo
@@ -24,9 +24,9 @@ platforms:
   - name: amazon
     driver:
       # Ubuntu:
-      #image_id: ami-6f587e1c
+      image_id: ami-6f587e1c
       # Centos7:
-      image_id: ami-7abd0209
+      #image_id: ami-7abd0209
       tags:
         Name: NodeApp1-ChefKitchen-Tests
         CycleStatus: Tests

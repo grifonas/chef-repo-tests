@@ -5,7 +5,7 @@
 # Greg konradt. Dec. 2016
 case node['platform_family']
 when 'debian'
-    package ['vim', 'iotop', 'htop', 'iftop', 'traceroute']   
+    package ['vim', 'iotop', 'htop', 'iftop', 'traceroute', 'jq']   
 
 when 'rhel'
 	package 'epel-release'

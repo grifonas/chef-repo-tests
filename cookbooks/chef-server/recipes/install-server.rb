@@ -68,15 +68,15 @@ bash 'create_organisation' do
   EOH
 end
 
-#bash 'install_chef_reporting' do
-#  user 'root'
-#  cwd '/tmp'
-#  code <<-EOH
-#    chef-server-ctl install opscode-reporting
-#    chef-server-ctl reconfigure
-#    opscode-reporting-ctl reconfigure --accept-license
-#  EOH
-#end
+bash 'install_chef_reporting' do
+  user 'root'
+  cwd '/tmp'
+  code <<-EOH
+    chef-server-ctl install opscode-reporting
+    chef-server-ctl reconfigure
+    opscode-reporting-ctl reconfigure --accept-license
+  EOH
+end
 
 bash 'configure_chef_step_2' do
   user 'root'

@@ -8,9 +8,9 @@ bash 'set_hostname' do
   user 'root'
   cwd '/tmp'
   code <<-EOH
-    echo #{node['nodejs']['hostname']} > /etc/hostname
-    echo "#{node['ipaddress']} #{node['nodejs']['hostname']}" >> /etc/hosts
-    hostname #{node['nodejs']['hostname']}
+    echo #{node['nodejs']['hostname']}-$(curl http://169.254.169.254/latest/meta-data/instance-id) > /etc/hostname
+    echo "#{node['ipaddress']} #{node['nodejs']['hostname']}-$(curl http://169.254.169.254/latest/meta-data/instance-id)" >> /etc/hosts
+    hostname #{node['nodejs']['hostname']}-$(curl http://169.254.169.254/latest/meta-data/instance-id)
   EOH
 end
 
@@ -75,31 +75,39 @@ end
 #end
 ## End of section
 
+case node.chef_environment  
+when 'testing'
+  consul_key_name = 'qa-version'
+when 'prod'
+  consul_key_name = 'stable-version'
+end
+
 bash 'get_installed_app_MD5' do
   user 'root'
   cwd '/opt/nodeapp'
-  code <<-EOH
-    md5sum main.js | awk '{print $1}' > md5_curr.txt
+  code <<-EOH    
+    md5sum $(ps aux | grep node | head -1 | awk '{print $NF}') | awk '{print $1}' > md5_curr.txt
   EOH
 end
 
 bash 'get_latest_artefact' do
   user 'root'
-  cwd '/opt/nodeapp'
-  code <<-EOH
-    wget http://artifactory.infra:8081/artifactory/#{node['nodejs']['RepoName']}/main.js -O main.js-new
-    md5sum main.js-new | awk '{print $1}' > md5_new.txt
-  EOH
+  cwd '/opt/nodeapp'  
+    code <<-EOH
+      CURR_VERSION=$(consul kv get #{consul_key_name})
+      wget http://artifactory.infra:8081/artifactory/#{node['nodejs']['RepoName']}/$CURR_VERSION -O new-main.js
+      md5sum new-main.js | awk '{print $1}' > md5_new.txt
+    EOH
 end
 
 bash 'restart_updated_app' do
   user 'root'
   cwd '/opt/nodeapp'
-  not_if 'diff md5_curr.txt md5_new.txt'
+  not_if "diff /opt/nodeapp/md5_curr.txt /opt/nodeapp/md5_new.txt"
   code <<-EOH    
-    pkill -9 nodejs || true 
-    mv /opt/nodeapp/main.js /opt/nodeapp/main.js-prev || true 
-    mv /opt/nodeapp/main.js-new /opt/nodeapp/main.js 
-    nodejs main.js > logs/main.log 2> logs/main.err &
+    CURR_VERSION=$(consul kv get #{consul_key_name})
+    pkill -9 nodejs || true     
+    mv /opt/nodeapp/new-main.js /opt/nodeapp/$CURR_VERSION
+    nodejs $CURR_VERSION > logs/main.log 2> logs/main.err &
   EOH
 end
