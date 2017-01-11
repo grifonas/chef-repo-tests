@@ -58,3 +58,19 @@ node["baseline"]["users"].each do |myUser|
     action doThis
   end
 end
+
+case node['platform']
+when 'ubuntu'
+  node["users"]["users"].each do |myUser|  
+    group "sudo" do
+      action :modify
+      append true
+      case myUser['sudo']
+      when 'yes'
+        members myUser['name']  
+      when 'no'
+        excluded_members myUser['name']  
+      end    
+    end  
+  end
+end
